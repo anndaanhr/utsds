@@ -1,0 +1,69 @@
+{
+  "top_features": [
+    "MonthlyIncome",
+    "OverTime",
+    "DailyRate",
+    "Age",
+    "MonthlyRate",
+    "EnvironmentSatisfaction",
+    "StockOptionLevel",
+    "JobInvolvement"
+  ],
+  "feature_info": {
+    "MonthlyIncome": {
+      "type": "numerical",
+      "min": 1009.0,
+      "max": 19999.0,
+      "mean": 6502.931292517007
+    },
+    "OverTime": {
+      "type": "categorical",
+      "options": [
+        "No",
+        "Yes"
+      ],
+      "mapping": {
+        "No": 0,
+        "Yes": 1
+      }
+    },
+    "DailyRate": {
+      "type": "numerical",
+      "min": 102.0,
+      "max": 1499.0,
+      "mean": 802.4857142857143
+    },
+    "Age": {
+      "type": "numerical",
+      "min": 18.0,
+      "max": 60.0,
+      "mean": 36.923809523809524
+    },
+    "MonthlyRate": {
+      "type": "numerical",
+      "min": 2094.0,
+      "max": 26999.0,
+      "mean": 14313.103401360544
+    },
+    "EnvironmentSatisfaction": {
+      "type": "numerical",
+      "min": 1.0,
+      "max": 4.0,
+      "mean": 2.721768707482993
+    },
+    "StockOptionLevel": {
+      "type": "numerical",
+      "min": 0.0,
+      "max": 3.0,
+      "mean": 0.7938775510204081
+    },
+    "JobInvolvement": {
+      "type": "numerical",
+      "min": 1.0,
+      "max": 4.0,
+      "mean": 2.7299319727891156
+    }
+  },
+  "accuracy": 0.8301886792452831,
+  "label_encoders": {}
+}

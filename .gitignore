@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+env/
+venv/
+.env
+*.egg-info/
+dist/
+build/
+.idea/
+.vscode/
+KAPSEL DSP ILKOM 2025.pdf
