@@ -92,13 +92,16 @@ function initPredictionForm() {
         }
 
         try {
+            console.log('Sending data:', JSON.stringify(data));
             const res = await fetch('/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
+            console.log('Response status:', res.status);
             const result = await res.json();
+            console.log('Result:', result);
 
             if (result.error) {
                 alert('Error: ' + result.error);
@@ -108,7 +111,8 @@ function initPredictionForm() {
             showResult(result);
 
         } catch (err) {
-            alert('Gagal menghubungi server. Pastikan Flask berjalan.');
+            console.error('Prediction error:', err);
+            alert('Gagal: ' + err.message);
         } finally {
             defaultText.style.display = 'inline';
             loadingText.style.display = 'none';

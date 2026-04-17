@@ -20,9 +20,7 @@ from sklearn.metrics import classification_report, accuracy_score
 import warnings
 warnings.filterwarnings('ignore')
 
-# ==========================================
 # 1. LOAD DATA
-# ==========================================
 print("=" * 60)
 print("FASE 1: Memuat Dataset")
 print("=" * 60)
@@ -33,35 +31,30 @@ print(f"Total kolom        : {len(df.columns)}")
 print(f"Missing Attrition  : {df['Attrition'].isna().sum()}")
 print()
 
-# ==========================================
+
 # 2. PREPROCESSING
-# ==========================================
+
 print("=" * 60)
 print("FASE 2: Preprocessing Data")
 print("=" * 60)
 
-# Hapus kolom yang tidak berguna (konstan / identifier)
 drop_cols = ['EmployeeId', 'EmployeeCount', 'Over18', 'StandardHours']
 df = df.drop(columns=drop_cols, errors='ignore')
 print(f"Kolom dihapus (tidak berguna): {drop_cols}")
 
-# Pisahkan data yang memiliki label Attrition dan yang tidak
 df_labeled = df[df['Attrition'].notna()].copy()
 df_unlabeled = df[df['Attrition'].isna()].copy()
 
 print(f"Data berlabel      : {len(df_labeled)}")
 print(f"Data tanpa label   : {len(df_unlabeled)}")
 
-# Encode target: Attrition -> 0 (bertahan) / 1 (resign)
 df_labeled['Attrition'] = df_labeled['Attrition'].astype(float).astype(int)
 print(f"\nDistribusi Attrition:")
 print(f"  Bertahan (0): {(df_labeled['Attrition'] == 0).sum()}")
 print(f"  Resign   (1): {(df_labeled['Attrition'] == 1).sum()}")
 print()
 
-# ==========================================
 # 3. ENCODE CATEGORICAL FEATURES
-# ==========================================
 print("=" * 60)
 print("FASE 3: Encoding Fitur Kategorikal")
 print("=" * 60)
@@ -84,19 +77,15 @@ for col in cat_cols:
 
 print()
 
-# ==========================================
 # 4. FEATURE SELECTION & MODEL TRAINING
-# ==========================================
 print("=" * 60)
 print("FASE 4: Training Model")
 print("=" * 60)
 
-# Pisahkan features dan target
 feature_cols = [c for c in df_labeled.columns if c != 'Attrition']
 X = df_labeled[feature_cols]
 y = df_labeled['Attrition']
 
-# Split data
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
