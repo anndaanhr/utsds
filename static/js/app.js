@@ -1,70 +1,31 @@
 /**
- * app.js - Frontend Logic
+ * app.js — Employee Attrition AI
+ * Prediction form + Navigation only (dashboard uses Looker Studio)
  */
 
-// ============================================
-// NAV TAB ACTIVE STATE
-// ============================================
 document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.tab');
-    const sections = document.querySelectorAll('.content-section');
+    initNavigation();
+    initPredictionForm();
+});
 
-    // Intersection Observer to highlight active tab on scroll
+// ============================================
+// NAVIGATION
+// ============================================
+function initNavigation() {
+    const links = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section');
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                tabs.forEach(t => t.classList.remove('active'));
-                const match = document.querySelector(`.tab[data-section="${entry.target.id}"]`);
+                links.forEach(l => l.classList.remove('active'));
+                const match = document.querySelector(`.nav-link[data-section="${entry.target.id}"]`);
                 if (match) match.classList.add('active');
             }
         });
     }, { rootMargin: '-40% 0px -50% 0px' });
 
     sections.forEach(s => observer.observe(s));
-
-    // Init form
-    initPredictionForm();
-    loadSavedDashboard();
-});
-
-// ============================================
-// DASHBOARD EMBED
-// ============================================
-function loadDashboard() {
-    const input = document.getElementById('lookerUrl');
-    let url = input.value.trim();
-    if (!url) {
-        input.focus();
-        return;
-    }
-
-    // Auto-fix URL if not embed
-    if (url.includes('/reporting/') && !url.includes('/embed/')) {
-        url = url.replace('/reporting/', '/embed/reporting/');
-    }
-
-    const container = document.getElementById('dashboardContent');
-    const emptyState = document.getElementById('emptyState');
-
-    emptyState.style.display = 'none';
-
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.setAttribute('allowfullscreen', '');
-    container.appendChild(iframe);
-
-    localStorage.setItem('lookerUrl', url);
-}
-
-function loadSavedDashboard() {
-    const saved = localStorage.getItem('lookerUrl');
-    if (saved) {
-        const input = document.getElementById('lookerUrl');
-        if (input) {
-            input.value = saved;
-            loadDashboard();
-        }
-    }
 }
 
 // ============================================
@@ -82,7 +43,7 @@ function initPredictionForm() {
         const loadingText = document.getElementById('btnLoading');
 
         defaultText.style.display = 'none';
-        loadingText.style.display = 'inline';
+        loadingText.style.display = 'inline-flex';
         btn.disabled = true;
 
         const formData = new FormData(form);
@@ -92,16 +53,13 @@ function initPredictionForm() {
         }
 
         try {
-            console.log('Sending data:', JSON.stringify(data));
             const res = await fetch('/predict', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
-            console.log('Response status:', res.status);
             const result = await res.json();
-            console.log('Result:', result);
 
             if (result.error) {
                 alert('Error: ' + result.error);
@@ -114,7 +72,7 @@ function initPredictionForm() {
             console.error('Prediction error:', err);
             alert('Gagal: ' + err.message);
         } finally {
-            defaultText.style.display = 'inline';
+            defaultText.style.display = 'inline-flex';
             loadingText.style.display = 'none';
             btn.disabled = false;
         }
@@ -135,14 +93,13 @@ function showResult(result) {
 
     const isSafe = result.prediction === 0;
 
-    box.className = 'result-box ' + (isSafe ? 'safe' : 'danger');
+    box.className = 'result-display ' + (isSafe ? 'safe' : 'danger');
     emoji.textContent = isSafe ? '✅' : '⚠️';
     status.textContent = result.label;
     desc.textContent = isSafe
-        ? 'Berdasarkan data yang diberikan, karyawan ini diprediksi akan tetap bertahan di perusahaan.'
-        : 'Karyawan ini diprediksi beresiko resign. Perlu perhatian lebih terhadap faktor-faktor terkait.';
+        ? 'Karyawan ini diprediksi akan tetap bertahan di perusahaan.'
+        : 'Karyawan ini beresiko resign. Perlu perhatian terhadap faktor-faktor terkait.';
 
-    // Animate bars
     setTimeout(() => {
         document.getElementById('pctBertahan').textContent = result.probability.bertahan + '%';
         document.getElementById('pctResign').textContent = result.probability.resign + '%';

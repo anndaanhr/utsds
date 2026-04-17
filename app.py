@@ -33,7 +33,6 @@ def predict():
     try:
         data = request.get_json()
         
-        # Bangun array input sesuai urutan fitur
         input_values = []
         for feat in TOP_FEATURES:
             value = data.get(feat)
@@ -42,7 +41,6 @@ def predict():
             
             info = FEATURE_INFO[feat]
             if info['type'] == 'categorical':
-                # Convert label ke encoded value
                 mapping = info['mapping']
                 if str(value) not in mapping:
                     return jsonify({'error': f'Nilai tidak valid untuk {feat}: {value}'}), 400
@@ -50,7 +48,6 @@ def predict():
             else:
                 input_values.append(float(value))
         
-        # Prediksi
         input_array = np.array([input_values])
         prediction = model.predict(input_array)[0]
         probability = model.predict_proba(input_array)[0]
